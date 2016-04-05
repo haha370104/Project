@@ -28,6 +28,7 @@ def check_login():
         if driver.check(password):
             session['driver_account_id'] = driver.account_ID
             session['driver_user_name'] = driver.user_name
+            session['driver_account'] = driver.to_json()
             # 这里应该写个token
             return '<script>location.href="/driver/home"</script>'
         else:
@@ -57,7 +58,10 @@ def check_register():
 
 @driver_bp.route('/home')
 def home():
-    return render_template('Users module/home.html', name=session['driver_user_name'])
+    driver = session['driver_account']
+
+    return render_template('Users module/dri-home.html', name=session['driver_user_name'],
+                           account=driver['account_money'], card_pic=driver['card_pic'],user_ID=driver['user_ID'])
 
 
 @driver_bp.route('/login')
@@ -68,3 +72,9 @@ def login():
 @driver_bp.route('/register')
 def register():
     return render_template('Users module/create-account.html')
+
+
+@driver_bp.route('/dri-security.html')
+@driver_bp.route('/security')
+def security():
+    return render_template('Users module/dri-security.html')

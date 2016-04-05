@@ -9,10 +9,7 @@ class adv_info(db.Model):
     amounts = db.Column('amounts', db.Integer, nullable=False)
     start_date = db.Column('start_date', db.DateTime, nullable=False)
     end_date = db.Column('end_date', db.DateTime)
-    location1_X = db.Column('location1_X', db.Float, nullable=False)
-    location1_Y = db.Column('location1_Y', db.Float, nullable=False)
-    location2_X = db.Column('location2_X', db.Float, nullable=False)
-    location2_Y = db.Column('location2_Y', db.Float, nullable=False)
+    location = db.Column('location', db.String(500), nullable=False)
     advter_account_ID = db.Column('advter_account_ID', db.Integer, nullable=False)
     adv_pic = db.Column('adv_pic', db.String(50))
     adv_text = db.Column('adv_text', db.String(80))
@@ -36,3 +33,12 @@ class adv_account(db.Model):
             return True
         else:
             return False
+
+
+class adv_record(db.Model):
+    __tablename__ = 'adv_record'
+    record_ID = db.Column('record_ID', db.Integer, primary_key=True, nullable=False, autoincrement=True)
+    adv_ID = db.Column('adv_ID', db.Integer, nullable=False)
+    driver_account_ID = db.Column('driver_account_ID', db.Integer, nullable=False)
+    payment = db.Column('payment', db.DECIMAL(6, 3), nullable=False)
+    play_time = db.Column('play_time', db.DateTime, nullable=False)

@@ -9,7 +9,7 @@ app.register_blueprint(controller.driver_bp, url_prefix='/driver')
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('default.html')
 
 
 if __name__ == '__main__':

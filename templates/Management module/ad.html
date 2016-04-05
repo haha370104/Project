@@ -9,7 +9,7 @@
 <link href="/static/css/datepicker3.css" rel="stylesheet">
 <link href="/static/css/bootstrap-table.css" rel="stylesheet">
 <link href="/static/css/styles.css" rel="stylesheet">
-<script type="text/javascript" src="http://api.map.baidu.com/api?key=&v=1.1&services=true"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.2"></script>
 </head>
 
 <body>
@@ -113,7 +113,7 @@
 									<div class="col-md-4">
 										<input id="adplace"  readonly name="adplace" type="text" placeholder="同济大学各个校区+地图API" class="form-control">
 										<br>
-										<div style="width:400px;height:350px;border:#ccc solid 1px;" id="dituContent"></div>
+										<div style="z-index:9;width:450px;height:340px;border:1px solid gray" id="container"></div>
 									</div>
 									
 									
@@ -246,101 +246,46 @@
     </script>
     
 	<script type="text/javascript">
-	    //创建和初始化地图函数：
-	    function initMap(){
-	        createMap();//创建地图
-	        setMapEvent();//设置地图事件
-	        addMapControl();//向地图添加控件
-	        addMarker();//向地图中添加marker
-	    }
-	    
-	    //创建地图函数：
-	    function createMap(){
-	        var map = new BMap.Map("dituContent");//在百度地图容器中创建一个地图
-	        var point = new BMap.Point(121.221192,31.291838);//定义一个中心点坐标
-	        map.centerAndZoom(point,17);//设定地图的中心点和坐标并将地图显示在地图容器中
-	        window.map = map;//将map变量存储在全局
-	    }
-	    
-	    //地图事件设置函数：
-	    function setMapEvent(){
-	        map.enableDragging();//启用地图拖拽事件，默认启用(可不写)
-	        map.disableScrollWheelZoom();//禁用地图滚轮放大缩小，默认禁用(可不写)
-	        map.enableDoubleClickZoom();//启用鼠标双击放大，默认启用(可不写)
-	        map.enableKeyboard();//启用键盘上下左右键移动地图
-	    }
-	    
-	    //地图控件添加函数：
-	    function addMapControl(){
-	        //向地图中添加缩放控件
-		var ctrl_nav = new BMap.NavigationControl({anchor:BMAP_ANCHOR_TOP_LEFT,type:BMAP_NAVIGATION_CONTROL_LARGE});
-		map.addControl(ctrl_nav);
-	        //向地图中添加缩略图控件
-		var ctrl_ove = new BMap.OverviewMapControl({anchor:BMAP_ANCHOR_BOTTOM_RIGHT,isOpen:1});
-		map.addControl(ctrl_ove);
-	        //向地图中添加比例尺控件
-		var ctrl_sca = new BMap.ScaleControl({anchor:BMAP_ANCHOR_BOTTOM_LEFT});
-		map.addControl(ctrl_sca);
-	    }
-	    
-	    //标注点数组
-	    var markerArr = [{title:"同济大学",content:"嘉定校区",point:"121.218991|31.2894",isOpen:0,icon:{w:21,h:21,l:46,t:46,x:1,lb:10}}
-			 ];
-	    //创建marker
-	    function addMarker(){
-	        for(var i=0;i<markerArr.length;i++){
-	            var json = markerArr[i];
-	            var p0 = json.point.split("|")[0];
-	            var p1 = json.point.split("|")[1];
-	            var point = new BMap.Point(p0,p1);
-				var iconImg = createIcon(json.icon);
-	            var marker = new BMap.Marker(point,{icon:iconImg});
-				var iw = createInfoWindow(i);
-				var label = new BMap.Label(json.title,{"offset":new BMap.Size(json.icon.lb-json.icon.x+10,-20)});
-				marker.setLabel(label);
-	            map.addOverlay(marker);
-	            label.setStyle({
-	                        borderColor:"#808080",
-	                        color:"#333",
-	                        cursor:"pointer"
-	            });
-				
-				(function(){
-					var index = i;
-					var _iw = createInfoWindow(i);
-					var _marker = marker;
-					_marker.addEventListener("click",function(){
-					    this.openInfoWindow(_iw);
-				    });
-				    _iw.addEventListener("open",function(){
-					    _marker.getLabel().hide();
-				    })
-				    _iw.addEventListener("close",function(){
-					    _marker.getLabel().show();
-				    })
-					label.addEventListener("click",function(){
-					    _marker.openInfoWindow(_iw);
-				    })
-					if(!!json.isOpen){
-						label.hide();
-						_marker.openInfoWindow(_iw);
-					}
-				})()
-	        }
-	    }
-	    //创建InfoWindow
-	    function createInfoWindow(i){
-	        var json = markerArr[i];
-	        var iw = new BMap.InfoWindow("<b class='iw_poi_title' title='" + json.title + "'>" + json.title + "</b><div class='iw_poi_content'>"+json.content+"</div>");
-	        return iw;
-	    }
-	    //创建一个Icon
-	    function createIcon(json){
-	        var icon = new BMap.Icon("http://app.baidu.com/map/images/us_mk_icon.png", new BMap.Size(json.w,json.h),{imageOffset: new BMap.Size(-json.l,-json.t),infoWindowOffset:new BMap.Size(json.lb+5,1),offset:new BMap.Size(json.x,json.h)})
-	        return icon;
-	    }
-	    
-	    initMap();//创建和初始化地图
+		var map = new BMap.Map("container",{mapType: BMAP_NORMAL_MAP});      //设置卫星图为底图
+		map.centerAndZoom(new BMap.Point(121.22258,31.294191),17);                     // 初始化地图,设置中心点坐标和地图级别。
+		map.addControl(new BMap.NavigationControl());  //添加鱼骨控件
+		map.addControl(new BMap.MapTypeControl());          //添加地图类型控件
+		map.setCurrentCity("上海");          // 设置3D地图显示的城市 此项是必须设置的
+		
+		
+		
+		//创建一个范围
+		//创建经纬度数组
+		var secRingCenter = new BMap.Point(121.221915,31.294399);
+		var secRing = [new BMap.Point(121.221834,31.295441),new BMap.Point(121.223326,31.295039),new BMap.Point(121.221852,31.292895),
+		               new BMap.Point(121.220523,31.293851)];
+		//创建多边形
+		var secRingPolygon = new BMap.Polygon(secRing, {strokeColor:"blue", strokeWeight:5, strokeOpacity:0.5});
+		//添加多边形到地图上
+		map.addOverlay(secRingPolygon);
+		//给多边形添加鼠标事件
+		secRingPolygon.addEventListener("mouseover",function(){
+		    secRingPolygon.setStrokeColor("red");
+		    map.addOverlay(secRingLabel);
+		    map.panTo(secRingCenter);
+		});
+		secRingPolygon.addEventListener("mouseout",function(){
+		    secRingPolygon.setStrokeColor("blue");
+		    map.removeOverlay(secRingLabel);
+		});
+		secRingPolygon.addEventListener("click",function(){
+		    map.zoomIn();
+		    secRingPolygon.setStrokeColor("red");
+		    map.setCenter(secRingCenter);
+		});
+		//创建标签
+		var secRingLabel = new BMap.Label("<b>同济大学嘉定校区</b></br>人工草坪足球场塑胶跑道。",{offset: new BMap.Size(-150,0), position: secRingCenter});
+		secRingLabel.setStyle({"z-index":"999999", "padding": "10px","width": "140px","border": "1px solid #ccff00"});
+		
+		var secRingLabel2 = new BMap.Label("操场",{offset: new BMap.Size(10,-30), position: secRingCenter});
+		secRingLabel2.setStyle({"line-height": "20px", "text-align": "center", "width": "80px", "height": "29px", "border": "none", "padding": "2px","background": "url(../../static/images/place.png) no-repeat",});
+		map.addOverlay(secRingLabel2);
+		
 	</script>
 		    
 </body>

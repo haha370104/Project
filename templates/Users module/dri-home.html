@@ -36,7 +36,7 @@
         </div>
         <nav class="left-nav">
             <ul>
-                <li><a href="dri-home.html" class="active"><i class="fa fa-home fa-fw"></i>个人主页</a></li>
+                <li><a href="home" class="active"><i class="fa fa-home fa-fw"></i>个人主页</a></li>
                 <li><a href="dri-security.html"><i class="fa fa-database fa-fw"></i>安全中心</a></li>
                 <li><a href="#"><i class="fa fa-map-marker fa-fw"></i>消息中心<span class="badge pull-right"
                                                                                 style="padding: 6px 12px;border-radius: 12px">6</span></a>
@@ -63,10 +63,10 @@
         </nav>
         <div class="indivisual-info ">
             <div class="indivisual-left col-md-5">
-                <div class=""><img src="/static/images/123.jpg"></div>
+                <div class=""><img src="/static/image/ID_card/{{ card_pic }}"></div>
                 <div class="username">
-                    <p>hahaha</p>
-                    <p style="font-size: 18px">XXXXXXXXXXXXXX</p>
+                    <p>{{ name }}</p>
+                    <p style="font-size: 18px">{{ user_ID }}</p>
                 </div>
                 <div class="icon" style="margin-left: 40px">
 
@@ -85,14 +85,14 @@
                     <table class="money-table" width="360px" style="margin-left: 50px">
                         <thead>
                         <tr>
-                            <th>总收入</th>
+                            <!--<th>总收入</th>-->
                             <th>账户余额</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
-                            <td><span><em>￥</em>5000</span></td>
-                            <td><span><em>￥</em>3000</span></td>
+                            <!--<td><span><em>￥</em>5000</span></td>-->
+                            <td><span><em>￥</em>{{ account }}</span></td>
                         </tr>
                         </tbody>
                         <tr></tr>

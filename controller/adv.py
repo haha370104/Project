@@ -1,10 +1,18 @@
-from flask import Blueprint, render_template, request, session
+from flask import Blueprint, render_template, request, session, redirect, url_for
 from model.adv import adv_account
 
-adv_bp = Blueprint('advter', __name__)
+adv_bp = Blueprint('adv', __name__)
 
 
-@adv_bp.route('/check_login', methods=['post'])
+@adv_bp.route('/')
+def index():
+    if 'adv_charge_name' not in session:
+        return redirect(url_for('adv.login'))
+    else:
+        return redirect(url_for('adv.home'))
+
+
+@adv_bp.route('/check_login', methods=['POST'])
 def check_login():
     phone = request.form['phone']
     password = request.form['password']
@@ -21,9 +29,11 @@ def check_login():
             return '<script>alert("用户名或密码错误");location.href="/driver/login"</script>'
 
 
-@adv_bp.route('/check_adv_submit')
+@adv_bp.route('/check_adv_submit', methods=['POST'])
 def check_adv_submit():
-    pass#前端有问题需要改
+    print('123')
+    pass  # 前端有问题需要改
+
 
 @adv_bp.route('/adv_submit')
 def adv_submit():

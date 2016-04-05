@@ -80,6 +80,19 @@ def check_driver():
 def show_advs():
     return render_template('Management module/ads.html')
 
+@admin_bp.route('/advs_ajax')
+def advs_ajax():
+    advs=adv_info.query.all()
+    ajax=[]
+    for adv in advs:
+        dic={}
+        dic['adv_ID']=adv.adv_ID
+        dic['']
+
+@admin_bp.route('/show_adv')
+def show_adv():
+    return render_template('Management module/ad.html')
+
 
 @admin_bp.route('/show_advters')
 def show_advters():

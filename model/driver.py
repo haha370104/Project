@@ -42,3 +42,17 @@ class driver_account(db.Model):
             return True
         else:
             return False
+
+    def to_json(self):
+        dic = {}
+        dic['account_ID'] = self.account_ID
+        dic['phone'] = self.phone
+        dic['account_money'] = float(self.account_money.real)
+        dic['email'] = self.email
+        dic['check_flag'] = self.check_flag
+        dic['deposit'] = float(self.deposit.real)
+        dic['pad_flag'] = self.pad_flag
+        dic['user_ID'] = self.user_ID
+        dic['user_name'] = self.user_name
+        dic['card_pic'] = self.card_pic
+        return dic
