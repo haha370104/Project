@@ -7,12 +7,25 @@ class adv_info(db.Model):
     adv_ID = db.Column('adv_ID', db.Integer, primary_key=True, nullable=False, autoincrement=True)
     cost = db.Column('cost', db.DECIMAL(6, 3), nullable=False)
     amounts = db.Column('amounts', db.Integer, nullable=False)
-    start_date = db.Column('start_date', db.DateTime, nullable=False)
-    end_date = db.Column('end_date', db.DateTime)
+    start_date = db.Column('start_date', db.Date, nullable=False)
+    start_time = db.Column('start_time', db.Time, nullable=False)
+    end_time = db.Column('end_time', db.Time, nullable=False)
     location = db.Column('location', db.String(500), nullable=False)
     advter_account_ID = db.Column('advter_account_ID', db.Integer, nullable=False)
     adv_pic = db.Column('adv_pic', db.String(50))
     adv_text = db.Column('adv_text', db.String(80))
+
+    def __init__(self, cost, amounts, start_date, start_time, end_time, location, advter_account_ID, adv_text,
+                 adv_pic=None):
+        self.cost = cost
+        self.amounts = amounts
+        self.start_date = start_date
+        self.start_time = start_time
+        self.end_time = end_time
+        self.location = location
+        self.advter_account_ID = advter_account_ID
+        self.adv_text = adv_text
+        self.adv_pic = adv_pic
 
 
 class adv_account(db.Model):
