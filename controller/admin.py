@@ -80,18 +80,34 @@ def check_driver():
 def show_advs():
     return render_template('Management module/ads.html')
 
+
 @admin_bp.route('/advs_ajax')
 def advs_ajax():
-    advs=adv_info.query.all()
-    ajax=[]
+    advs = adv_info.query.all()
+    ajax = []
     for adv in advs:
-        dic={}
-        dic['adv_ID']=adv.adv_ID
-        dic['']
+        dic = {}
+        dic['adv_ID'] = adv.adv_ID
+        dic['adv_amounts'] = adv.amounts
+        dic['adv_text'] = adv.adv_text
+        dic['cost'] = float(adv.cost.real)
+        dic['date'] = str(adv.start_date)
+        advter = adv_account.query.filter_by(account_ID=adv.advter_account_ID).first()
+        dic['company'] = advter.company_name
+        ajax.append(dic)
+    return str(ajax)
 
-@admin_bp.route('/show_adv')
-def show_adv():
-    return render_template('Management module/ad.html')
+
+@admin_bp.route('/adv/<int:adv_ID>')
+def show_adv(adv_ID):
+    if adv_ID == None:
+        return redirect(url_for('admin.show_advs'))
+    else:
+        adv = adv_info.query.filter_by(adv_ID=adv_ID).first()
+        advter = adv_account.query.filter_by(account_ID=adv.advter_account_ID).first()
+        date = str(adv.start_time) + '-' + str(adv.end_time)
+        return render_template('Management module/ad.html', adv_ID=adv.adv_ID, text=adv.adv_text, datetime=date,
+                               location=adv.location, company=advter.company_name)
 
 
 @admin_bp.route('/show_advters')
@@ -121,7 +137,7 @@ def show_advter(account_ID):
         advter = adv_account.query.filter_by(account_ID=account_ID).first()
         return render_template('Management module/aduser.html', account_ID=account_ID, flag=advter.check_flag,
                                company=advter.company_name, amount=advter.adv_amount, name=advter.charge_name,
-                               phone=advter.phone,remark=advter.remark)
+                               phone=advter.phone, remark=advter.remark)
 
 
 @admin_bp.route('/check_advter', methods=['GET'])

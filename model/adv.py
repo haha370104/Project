@@ -14,6 +14,7 @@ class adv_info(db.Model):
     advter_account_ID = db.Column('advter_account_ID', db.Integer, nullable=False)
     adv_pic = db.Column('adv_pic', db.String(50))
     adv_text = db.Column('adv_text', db.String(80))
+    check_flag = db.Column('check_flag', db.Boolean)
 
     def __init__(self, cost, amounts, start_date, start_time, end_time, location, advter_account_ID, adv_text,
                  adv_pic=None):
@@ -26,6 +27,7 @@ class adv_info(db.Model):
         self.advter_account_ID = advter_account_ID
         self.adv_text = adv_text
         self.adv_pic = adv_pic
+        self.check_flag = None
 
 
 class adv_account(db.Model):
