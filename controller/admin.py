@@ -2,8 +2,9 @@ from flask import request, render_template, session, current_app, redirect, url_
 from model import db
 from model.admin import admin_account
 from model.driver import driver_account
-from model.adv import *
+from model.adv import adv_info, adv_account
 import hashlib
+from model.LBS import *
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -106,8 +107,12 @@ def show_adv(adv_ID):
         adv = adv_info.query.filter_by(adv_ID=adv_ID).first()
         advter = adv_account.query.filter_by(account_ID=adv.advter_account_ID).first()
         date = str(adv.start_time) + '-' + str(adv.end_time)
+        location = []
+        location_json = json.loads(adv.location)
+        for point in location_json:
+            location.append(gcj02tobd09(point[0], point[1]))
         return render_template('Management module/ad.html', adv_ID=adv.adv_ID, text=adv.adv_text, datetime=date,
-                               location=adv.location, company=advter.company_name)
+                               location=location, company=advter.company_name)
 
 
 @admin_bp.route('/show_advters')

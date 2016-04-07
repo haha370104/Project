@@ -4,6 +4,8 @@ from datetime import datetime
 import time
 from werkzeug.utils import secure_filename
 import os
+import json
+from model.LBS import *
 
 app = current_app
 adv_bp = Blueprint('adv', __name__)
@@ -40,14 +42,17 @@ def check_adv_submit():
     adv_text = request.form['adv_text']
     adv_pic = request.files['adv_pic']
     adv_count = int(request.form['adv_count'])
-    location = request.form['location']
+    location = json.loads(request.form['location'])
+    gcj02_loc = []
+    for point in location:
+        gcj02_loc.append(bd09togcj02(point[0], point[1]))
     date = datetime.strptime(request.form['date'], '%Y-%m-%d')
     start_time = time.strptime(request.form['start_time'], '%H:%M')
     end_time = time.strptime(request.form['end_time'], '%H:%M')
     cost = float(request.form['cost'])
     adv_filename = secure_filename(adv_pic.filename)
     adv_pic.save((os.path.join(app.root_path, 'static/image/adv_pic', adv_filename)))
-    adv = adv_info(cost, adv_count, date, start_time, end_time, location, session['adv_account_id'], adv_text,
+    adv = adv_info(cost, adv_count, date, start_time, end_time, str(gcj02_loc), session['adv_account_id'], adv_text,
                    adv_filename)
     db.session.add(adv)
     db.session.commit()
