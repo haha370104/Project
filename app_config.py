@@ -7,3 +7,4 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Ab123456@115.28.20
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:ttkl1231@localhost:3306/Project'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+#test
