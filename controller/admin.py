@@ -1,10 +1,10 @@
-from flask import request, render_template, session, current_app, redirect, url_for, Blueprint
+from flask import request, render_template, session, redirect, url_for, Blueprint
+
 from model import db
 from model.admin import admin_account
-from model.driver import driver_account
 from model.adv import adv_info, adv_account
-import hashlib
-from model.LBS import *
+from model.driver import driver_account
+from tools.LBS import *
 
 admin_bp = Blueprint('admin', __name__)
 
