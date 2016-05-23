@@ -1,7 +1,7 @@
-from . import security
 import hashlib
+
 from app_config import db
-import hashlib
+from tools import security
 
 
 class driver_account(db.Model):
@@ -21,6 +21,7 @@ class driver_account(db.Model):
     permit_pic = db.Column('permit_pic', db.String(255))
     car_pic = db.Column('car_pic', db.String(255))
     token = db.Column('token', db.String(40))
+    pay_password = db.Column('pay_password', db.String(50))
 
     def __init__(self, phone, password, user_name, user_id, card_pic, permit_pic, car_pic, email=None):
         self.salt = security.get_salt(16)
@@ -42,3 +43,51 @@ class driver_account(db.Model):
             return True
         else:
             return False
+
+    def to_json(self):
+        dic = {}
+        check_flag = {None: '未审核', True: '审核通过', False: '被封禁'}
+        dic['account_ID'] = self.account_ID
+        dic['phone'] = self.phone
+        dic['account_money'] = float(self.account_money.real)
+        dic['email'] = self.email
+        dic['check_flag'] = check_flag[self.check_flag]
+        dic['deposit'] = float(self.deposit.real)
+        dic['pad_flag'] = self.pad_flag
+        dic['user_ID'] = self.user_ID
+        dic['user_name'] = self.user_name
+        dic['card_pic'] = self.card_pic
+        return dic
+
+    def change_pwd(self, pwd):
+        self.account_pwd = hashlib.md5((pwd + self.salt).encode('ascii')).hexdigest()
+        db.session.commit()
+        return True
+
+    def check_pay_pwd(self, pwd):
+        if pwd == None:
+            return False
+        password = hashlib.md5((pwd + self.salt).encode('ascii')).hexdigest()
+        if password == self.pay_password:
+            return True
+        else:
+            return False
+
+    def change_pay_pwd(self, pwd):
+        password = hashlib.md5((pwd + self.salt).encode('ascii')).hexdigest()
+        self.pay_password = password
+        db.session.commit()
+        return True
+
+    def money_change(self, money):
+        if float(self.account_money) + float(money) > 0:
+            self.account_money = float(self.account_money) + float(money)
+            db.session.commit()
+            return True
+        else:
+            return False
+
+    def check_driver(self, flag):
+        self.check_flag = flag
+        db.session.commit()
+        return True

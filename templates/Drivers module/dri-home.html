@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MovingAD</title>
+    <meta name="description" content="">
+    <meta name="author" content="templatemo">
+
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/style-home.css" rel="stylesheet">
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+
+</head>
+<body>
+<!-- Left column -->
+<div class="flex-row">
+    <div class="sidebar" style="position:absolute;">
+        <header class="site-header">
+            <div class="square" style="float: left;"></div>
+            <div class="text-center">
+                <h1>{{ name }}</h1>
+            </div>
+        </header>
+        <div class="profile-photo-container">
+            <img src="/static/images/profile-photo.jpg" alt="Profile Photo" class="img-responsive">
+            <div class="profile-photo-overlay"></div>
+        </div>
+        <div class="mobile-menu-icon">
+            <i class="fa fa-bars"></i>
+        </div>
+        <nav class="left-nav">
+            <ul>
+                <li><a href="/driver/home" class="active"><i class="fa fa-home fa-fw"></i>个人主页</a></li>
+                <li><a href="/driver/security"><i class="fa fa-lock fa-fw" style="font-size: 17px"></i>安全中心</a></li>
+                <li><a href="/driver/ad_details"><i class="fa fa-list fa-fw"></i>广告明细</a></li>
+                <li><a href="/driver/chat"><i class="glyphicon glyphicon-envelope gly-item"></i>消息中心<span
+                        class="badge pull-right"
+                        style="padding: 6px 12px;border-radius: 12px">{{ count }}</span></a>
+                </li>
+                <li><a href="/driver/s_notice"><i class="glyphicon glyphicon-info-sign gly-item"></i>通知查看</a></li>
+                <li><a href="/driver/logout"><i class="fa fa-eject fa-fw"></i>退出登录</a></li>
+
+            </ul>
+        </nav>
+    </div>
+    <!-- Main content -->
+    <div class="content col-1 " style="background: whitesmoke;margin-left: 300px">
+        <nav class="top-nav-container " style="padding-bottom: 50px">
+            <div class="row pull-right">
+                <nav class="top-nav col-lg-12 col-md-12 ">
+                    <ul class="text-uppercase">
+                        <li><a href="/driver/home" class="active">用户首页</a></li>
+                        <li><a href="/driver/logout">退出登录</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </nav>
+        <div class="ad-info white-bg">
+
+            <div class="white-bg home-item" style="padding-top: 15px"><p style="font-size: 22px;padding: 0 10px"><i
+                    class="glyphicon glyphicon-user light-gray-bg"></i> 用户信息</p></div>
+            <div class="indivisual-info " style="padding: 0px 50px 20px 50px;border-bottom: 1px dotted lightgray">
+
+                <div class="white-bg">
+                    <div class="indivisual-left col-md-5">
+                        <div class=""><img src="/static/image/ID_card/{{ card_pic }}"></div>
+                        <div class="username">
+                            <p>{{ name }}</p>
+                            <p style="font-size: 18px">{{ user_ID }}</p>
+                        </div>
+                        <div class="icon" style="margin-left: 40px">
+
+                            <i class="fa fa-credit-card fa-2x" data-toggle="tooltip" data-placement="bottom"
+                               data-title="账号余额{{ account }}"></i>
+                            <i class="fa fa-user fa-2x" data-toggle="tooltip" data-placement="bottom"
+                               data-title="身份{{ flag }}"></i>
+                            <i class="fa fa-mobile fa-2x" data-toggle="tooltip" data-placement="bottom"
+                               data-title="已绑定手机{{ phone }}"></i>
+                            <i class="fa fa-key fa-2x" data-toggle="tooltip" data-placement="bottom"
+                               data-title="您的交易密码已设置"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="indivisual-right col-md-7" style="padding-top: 70px">
+                    <div class=" col-md-8">
+                        <table class="money-table" width="360px" style="margin-left: 50px">
+                            <thead>
+                            <tr>
+                                <!--<th>总收入</th>-->
+                                <th>账户余额</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <!--<td><span><em>￥</em>5000</span></td>-->
+                                <td><span><em>￥</em>{{ account }}</span></td>
+                            </tr>
+                            </tbody>
+                            <tr></tr>
+                        </table>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-info" onclick="location.href='/driver/get_cash/'">取现</button>
+                    </div>
+                </div>
+                <div style="clear: both;"></div>
+            </div>
+
+
+            <div class="home-item"><p style="font-size: 22px;margin-top: 10px;padding: 0 10px"><i
+                    class="fa fa-list"></i> 广告播放记录</p></div>
+
+            <div class="indivisual-ad" style="margin-top: 30px;padding: 0px 20px;">
+                <table class="table table-striped">
+                    <thead style="background-color: #5bc0de;color: white;border-radius: 5px">
+                    <tr>
+                        <th>No.</th>
+                        <th>广告内容</th>
+                        <th>时间</th>
+                        <th>收入</th>
+                    </tr>
+                    </thead>
+                    <tbody id="record_table">
+
+                    </tbody>
+                </table>
+                <div class="col-md-12" style="text-align: center;">
+                    <ul class="pagination" style="margin-left: -50px" id="page_ul">
+                        <li><a>&laquo;</a></li>
+                        <li><a onclick="show(1)">1</a></li>
+                        <li><a>&raquo;</a></li>
+                    </ul>
+                </div>
+                <div style="clear: both;"></div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- JS -->
+<script src="/static/js/jquery-1.11.1.min.js"></script>      <!-- jQuery -->
+<script src="/static/js/jquery-migrate-1.2.1.min.js"></script> <!--  jQuery Migrate Plugin -->
+<script src="/static/js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+        $("[data-toggle='tooltip']").tooltip();
+        $(".indivisual-task .task-title li").click(function () {
+            $(this).siblings().removeClass("on");
+            $(this).addClass("on");
+
+        });
+    });
+    var json = {};
+    $(document).ready(function () {
+        $.get("/driver/get_records/", function (data, status) {
+            if (status == 'success') {
+                json = JSON.parse(data);
+                show(1);
+                document.getElementById('page_ul').innerHTML = '';
+                for (var i = 0; i < json.length; i += 5) {
+                    var page = i / 5 + 1;
+                    document.getElementById('page_ul').innerHTML += '<li><a onclick="show(' + page + ')">' + page + '</a></li>'
+                }
+            }
+        });
+    });
+
+    function show(page) {
+        document.getElementById('record_table').innerHTML = '';
+        var i = page * 5 - 5;
+        for (; i < json.length && i < page * 5; i++) {
+            var record = json[i];
+            var str = '<tr><td>' + record['NO'] + '</td><td>' + record['adv_text'] + '</td><td>' + record['time'] + '</td><td>' + record['money'] + '</td></tr>'
+            document.getElementById('record_table').innerHTML += str;
+        }
+    }
+</script>
+</body>
+</html>
