@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MovingAD</title>
+    <meta name="description" content="">
+    <meta name="author" content="templatemo">
+
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/style-home.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+
+</head>
+<body>
+
+
+<!-- Left column -->
+<div class="flex-row" style="position:relative;;">
+    <div class="back-top" style="display: none;">⬆️</div>
+    <div class="sidebar" style="position: fixed;z-index: 1010">
+        <header class="site-header" style="z-index: 1010;background-color: black;margin: 0;padding: 25px 30px;">
+            <div class="square" style="float: left;"></div>
+            <div class="text-center">
+                <h1>{{ name }}</h1>
+            </div>
+        </header>
+        <div class="profile-photo-container">
+            <img src="/static/images/profile-photo.jpg" alt="Profile Photo" class="img-responsive">
+            <div class="profile-photo-overlay"></div>
+        </div>
+        <div class="mobile-menu-icon">
+            <i class="fa fa-bars"></i>
+        </div>
+        <nav class="left-nav">
+            <ul>
+                <li><a href="/adv/home"><i class="fa fa-home fa-fw"></i>用户主页</a></li>
+                <li><a href="/adv/security"><i class="fa fa-lock fa-fw" style="font-size: 17px"></i>安全中心</a></li>
+                <li><a href="/adv/ad_list/" class="active"><i class="fa fa-list fa-fw"></i>广告明细</a></li>
+                <li><a href="/adv/adv_submit"><i class="fa fa-file fa-fw"></i>广告提交</a></li>
+                <li><a href="/adv/notice"><i class="fa fa-list fa-fw"></i>系统通知</a></li>
+                <li><a href="/adv/logout"><i class="fa fa-eject fa-fw"></i>退出登录</a></li>
+            </ul>
+        </nav>
+    </div>
+    <!-- Main content -->
+    <div class="content col-1 light-gray-bg" style="margin-left: 300px">
+        <nav class="top-nav-container " style="padding-bottom: 50px">
+            <div class="row pull-right">
+                <nav class="top-nav col-lg-12 col-md-12 ">
+                    <ul class="text-uppercase">
+                        <li><a href="" class="active">用户首页</a></li>
+                        <!--<li><a href="">动态信息</a></li>-->
+                        <li><a href="">任务栏</a></li>
+                        <li><a href="/driver/logout">退出登录</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </nav>
+        <div class="home-item"><p style="font-size: 22px;margin-top: 10px;padding: 0 10px"><i
+                class="fa fa-list"></i> 广告播放记录</p></div>
+
+        <div class="indivisual-security-body col-md-12">
+            <ul class="security-list">
+
+                <li style="clear: both;border-bottom: none;height: 0px;padding: 0"></li>
+            </ul>
+
+        </div>
+
+
+    </div>
+</div>
+
+<!-- JS -->
+<script src="/static/js/jquery-1.11.1.min.js"></script>      <!-- jQuery -->
+<script src="/static/js/jquery-migrate-1.2.1.min.js"></script> <!--  jQuery Migrate Plugin -->
+<script src="/static/js/jquery.lazyload.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/string_format.js"></script>
+<script>
+    var last = 0;
+    $(document).ready(function () {
+
+        $(window).scroll(function (e) {
+            //若滚动条离顶部大于100元素
+            if ($(window).scrollTop() > 100)
+                $(".back-top").fadeIn(1000);//以1秒的间隔渐显id=gotop的元素
+            else
+                $(".back-top").fadeOut(1000);//以1秒的间隔渐隐id=gotop的元素
+        });
+
+        $(".back-top").click(function () {
+            $("body,html").animate({scrollTop: 0}, 300);
+        })
+
+        $(window).scroll(function () {
+            var lastTop = $("li:last").offset().top;
+            var scrollTop = $(window).scrollTop();
+            var clientHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+            var item = '<li class="details">\
+                    <div style="float: left;"><img src="/static/images/head2.png" alt=""\
+                    style="width: 60px;height: 60px;"></div>\
+                    <h4 class="details-info">\
+                    <strong>{0}<span>联系方式:{1}</span></strong>\
+                    <span style="display: block;margin-top: 10px"></span>\
+                    </h4>\
+                    <div class="details-time" >\
+                    {2}\
+                    </div>\
+                    </li>';
+            if (lastTop < scrollTop + clientHeight) {
+                //ajax请求字符串
+                $.get('/adv/ad_history_ajax/{{ adv_ID }}/{0}/'.format(last + ''), function (data, status) {
+                    if (status == 'success') {
+                        var json = JSON.parse(data);
+                        if (json.length > 0) {
+                            last = json.slice(-1)['record_ID'];
+                            $(".security-list").append(item.format(json['user_name'], json['phone'], json['play_time']));
+                        }
+                    }
+                });
+
+            }
+        });
+
+        $(".del").click(function () {
+            $(this).parents(".details").remove();
+
+        });
+        $.get('/adv/ad_history_ajax/{{ adv_ID }}/{0}/'.format(last + ''), function (data, status) {
+            var item = '<li class="details">\
+                    <div style="float: left;"><img src="/static/images/head2.png" alt=""\
+                    style="width: 60px;height: 60px;"></div>\
+                    <h4 class="details-info">\
+                    <strong>{0}<span>联系方式:{1}</span></strong>\
+                    <span style="display: block;margin-top: 10px">广告内容简介</span>\
+                    </h4>\
+                    <div class="details-time" >\
+                    {2}\
+                    </div>\
+                    </li>';
+            if (status == 'success') {
+                var json = JSON.parse(data);
+                if (json.length > 0) {
+                    last = json.slice(-1)['record_ID'];
+                    for (var i = 0; i < json.length; i++) {
+                        $(".security-list").append(item.format(json[i]['user_name'], json[i]['phone'], json[i]['play_time']));
+                    }
+                }
+            }
+        });
+    })
+</script>
+</body>
+</html>

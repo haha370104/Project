@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>注册用户</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/static/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/bootstrap-filestyle.min.js"></script>
+    <script src="/static/js/app.js"></script>
+    <script>
+        var wait = 60;
+        function time(o) {
+            if (wait == 0) {
+                o.removeAttribute("disabled");
+                o.value = "免费获取验证码";
+                wait = 60;
+            } else {
+                o.setAttribute("disabled", true);
+                o.value = wait + "秒后可以重新发送";
+                wait--;
+                setTimeout(function () {
+                            time(o)
+                        },
+                        1000)
+            }
+        }
+        $(document).ready(function () {
+            $("#getID").click(function () {
+                time(this);
+            })
+        })
+    </script>
+</head>
+<body class="bg-blue">
+<div>
+    <br>
+    <h2 class="margin-bottom-15">创建用户</h2>
+</div>
+<div>
+    <div class="col-md-12">
+        <form class="form-horizontal create-account container" id="border" role="form" action="/adv/check_register/"
+              method="post" style="margin-bottom: 20px" enctype="multipart/form-data">
+            <div class="form-inner">
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="phone" class="control-label">公司名称</label>
+                        <input type="text" class="form-control" id="company_name" name="company_name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="phone" class="control-label">电话号码</label>
+                        <input type="text" class="form-control" id="phone" placeholder="PhoneNum" name="phone">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="button" class="btn-getID" id="getID" style="margin-top: 36px;width: 155px"
+                               value="获取验证码">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="numid">短信验证码</label>
+                        <input type="text" id="numid" class="form-control" placeholder="" name="check_code">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="username" class="control-label">企业负责人姓名</label>
+                        <input type="text" class="form-control" id="username" placeholder="Name" name="user_name">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="IDCardnum" class="control-label">身份证号码</label>
+                        <input type="text" class="form-control" id="idcardnum" placeholder="IDCard" name="userID">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="password" class="control-label">密码</label>
+                        <input type="password" class="form-control" id="password" placeholder="Password(6到16位)"
+                               name="password">
+                    </div>
+                    <div class="col-md-6" id="pwdconfirm">
+                        <label for="password" class="control-label">确认密码 </label>
+                        <input type="password" class="form-control" id="password_confirm"
+                               placeholder="Confirm Password">
+                    </div>
+                </div>
+
+
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">身份证照片</label>
+                        <input type="file" name="ID_card_image" id="IDCard" class="filestyle"
+                               data-buttonName="btn-primary" data-buttonBefore="true" data-icon="false">
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">公司证件照片</label>
+                        <input type="file" name="company_img" id="license" class="filestyle"
+                               data-buttonName="btn-primary" data-buttonBefore="true" data-icon="false">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label><input type="checkbox">我同意
+                            <a href="javascript:;" data-toggle="modal" data-target="#templatemo_modal">服务条款和相关政策</a>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <input type="submit" value="创建账号" class="btn btn-primary">
+                    </div>
+                </div>
+
+            </div>
+        </form>
+        <div class="text-center" style="margin-bottom: 30px">
+            <a href="/driver/login" class="create-new">登录
+                <i class="fa fa-arrow-circle-o-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+</body>
+
+<script>
+    $('#getID').click(function () {
+        var phone_num = $('#phone').val();
+        $.get("/adv/get_check_code/" + phone_num, function (data, status) {
+            if (status == 'success') {
+                if (data == '310') {
+                    alert('账号已存在');
+                } else if (data == '300') {
+                    alert('验证码已发送');
+                }
+            }
+        });
+    });
+</script>
+</html>

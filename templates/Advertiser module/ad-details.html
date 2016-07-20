@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MovingAD</title>
+    <meta name="description" content="">
+
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/style-home.css" rel="stylesheet">
+    <link href="/static/css/jquery-ui.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-datetimepicker.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+
+    <style>
+        .label-item {
+            font-size: 17px;
+        }
+    </style>
+    <style>
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            font-family: "微软雅黑";
+        }
+
+        #allmap {
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+        }
+
+        #result {
+            width: 100%;
+            font-size: 12px;
+        }
+
+        dl, dt, dd, ul, li {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        p {
+            font-size: 12px;
+        }
+
+        dt {
+            font-size: 14px;
+            font-family: "微软雅黑";
+            font-weight: bold;
+            border-bottom: 1px dotted #000;
+            padding: 5px 0 5px 5px;
+            margin: 5px 0;
+        }
+
+        dd {
+            padding: 5px 0 0 5px;
+        }
+
+        li {
+            line-height: 28px;
+        }
+
+    </style>
+    <script type="text/javascript"
+            src="http://api.map.baidu.com/api?v=2.0&ak=cQMEggKvVvEjBOixmpn8p3KjbmCQDkT6"></script>
+    <!--加载鼠标绘制工具-->
+    <script type="text/javascript"
+            src="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css"/>
+    <!--加载检索信息窗口-->
+    <script type="text/javascript"
+            src="http://api.map.baidu.com/library/SearchInfoWindow/1.4/src/SearchInfoWindow_min.js"></script>
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/SearchInfoWindow/1.4/src/SearchInfoWindow_min.css"/>
+
+</head>
+<body>
+<!-- Left column -->
+<div class="flex-row">
+    <div class="sidebar">
+        <header class="site-header">
+            <div class="square" style="float: left;"></div>
+            <div class="text-center">
+                <h1>{{ name }}</h1>
+            </div>
+        </header>
+        <div class="profile-photo-container">
+            <img src="/static/images/profile-photo.jpg" alt="Profile Photo" class="img-responsive">
+            <div class="profile-photo-overlay"></div>
+        </div>
+        <div class="mobile-menu-icon">
+            <i class="fa fa-bars"></i>
+        </div>
+        <nav class="left-nav">
+            <ul>
+                <li><a href="/adv/home"><i class="fa fa-home fa-fw"></i>用户主页</a></li>
+                <li><a href="/adv/security"><i class="fa fa-lock fa-fw" style="font-size: 17px"></i>安全中心</a></li>
+                <li><a href="/adv/ad_list/" class="active"><i class="fa fa-list fa-fw"></i>广告明细</a></li>
+                <li><a href="/adv/adv_submit"><i class="fa fa-file fa-fw"></i>广告提交</a></li>
+                <li><a href="/adv/notice"><i class="fa fa-list fa-fw"></i>系统通知</a></li>
+                <li><a href="/adv/logout"><i class="fa fa-eject fa-fw"></i>退出登录</a></li>
+            </ul>
+        </nav>
+    </div>
+    <!-- Main content -->
+    <div class="content col-1 light-gray-bg">
+        <div class="top-nav-container " style="padding-bottom: 50px">
+
+            <div class="row pull-right">
+                <nav class="top-nav col-lg-12 col-md-12 ">
+                    <ul class="text-uppercase">
+                        <li><a href="" class="active">用户首页</a></li>
+                        <li><a href="">动态信息</a></li>
+                        <li><a href="/adv/logout">退出登录</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <div class="ad-info white-bg">
+            <form role="form" class="advertisement-summit " action="/adv/check_adv_submit" method="post"
+                  enctype="multipart/form-data" id="form1">
+                <div class="form-inner">
+
+                    <div class="form-group">
+                        <div style="float: left;"><img src="/static/images/head2.png" alt=""
+                                                       style="width: 60px;height: 60px;"></div>
+                        <h4 style="float: left;margin-left: 30px">
+                            <strong>{{ name }}<span></span></strong>
+                        </h4>
+                        <div style="clear: both;"></div>
+                    </div>
+                    <div class="form-group" style="margin-top: 30px">
+                        <div class="col-md-8">
+                            <label for="brief" class="label-item">广告简介</label>
+                            <textarea name="adv_sum" class="form-control" id="brief" rows="1" required
+                                      style="margin-bottom: 10px" readonly></textarea>
+                        </div>
+                        <div style="clear: both;"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label style="margin-top: 10px" class=" label-item">广告内容</label>
+                            <div style="margin-top: 15px">
+                                <input type="radio" id="con" name="select" value="false" disabled>文字内容
+                                <input type="radio" id="img" name="select" value="true" disabled>广告图片
+                            </div>
+                        </div>
+                        <div style="clear: both;"></div>
+                    </div>
+                    <div class="form-group" style="margin-top: 20px">
+                        <div class="col-md-12 sel-con">
+                            <textarea name="adv_text" class="form-control" id="content" rows="3" required
+                                      style="margin-bottom: 2px"
+                                      readonly></textarea>
+                        </div>
+                        <div class="col-md-12 sel-img" style="display: none;margin: 5px 0">
+                            <p>
+                                <img id="adv_img" alt=""
+                                     style="width: 200px;height: 160px">
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 30px">
+                        <label class="col-md-2 label-item" style="font-size: 18px;margin-top: 30px">播放时间</label>
+                        <div class="col-md-12">
+                            <div class="col-md-3"
+                                 style="margin-top: 23px;padding-top: 10px;padding-right: 0px;margin-left: -15px">
+                                <input type="text" id="datepicker" class="form-control" placeholder="" name="date"
+                                       value="05/04/2016" readonly>
+                            </div>
+                            <div class="col-md-3" style="padding-top: 5px;padding-right: 0px;">
+                                <label for="time1"></label>
+                                <input type="text" id="time1" class="form-control" placeholder="" name="start_time"
+                                       value="08:30" readonly>
+                            </div>
+                            <div class="col-md-1" style="margin-top: 37px;margin-left: 20px;">
+                                <p style="font-size: 24px;">&#8680;</p>
+                            </div>
+                            <div class="col-md-3" style="padding-top: 5px;padding-left: 0px;">
+                                <label for="time2"></label>
+                                <input type="text" id="time2" class="form-control" placeholder="" name="end_time"
+                                       value="12:00" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-5">
+                            <label for="sin-mon" class="label-item" style="margin-top: 30px">每条价格:</label>
+                            <input id="sin-mon" type="text" class="form-control" value="123" readonly>
+                        </div>
+                        <div style="clear: both;"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-5">
+                            <label for="allmon" class="label-item">当前剩余条数:</label>
+                            <input type="text" id="allmon" value="112323" class="form-control" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 30px">
+                        <div class="col-md-12" style="margin-top: 10px">
+                            <label for="allmap" class="label-item">广告播放位置</label>
+                            <div id="allmap" style="overflow:hidden;zoom:1;position:relative;">
+                                <div id="map"
+                                     style="border: 1px solid darkgray;border-radius:5px;height:95%;width: 88%;-webkit-transition: all 0.5s ease-in-out;transition: all 0.5s ease-in-out;">
+                                </div>
+                            </div>
+                            <input type="text" name="location" style="display: none;" id="location"/>
+                        </div>
+                    </div>
+
+
+                    <div style="clear: both;"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JS -->
+<script src="/static/js/jquery-1.11.1.min.js"></script>      <!-- jQuery -->
+<script src="/static/js/jquery-migrate-1.2.1.min.js"></script> <!--  jQuery Migrate Plugin -->
+<script src="/static/js/bootstrap-filestyle.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/jquery-ui.js"></script>
+<script src="/static/js/bootstrap-datetimepicker.js"></script>
+<script src="/static/js/jquery-ui-slide.min.js"></script>
+<script src="/static/js/jquery-ui-timepicker-addon.js"></script>
+<script>
+    // 百度地图API功能
+    var map = new BMap.Map('map');
+    var poi = new BMap.Point(121.480237, 31.236305);
+    map.centerAndZoom(poi, 12);
+    var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT});// 左上角，添加比例尺
+    var top_left_navigation = new BMap.NavigationControl();  //左上角，添加默认缩放平移控件
+    //右上角，仅包含平移和缩放按钮
+    /*缩放控件type有四种类型:
+     BMAP_NAVIGATION_CONTROL_SMALL：仅包含平移和缩放按钮；BMAP_NAVIGATION_CONTROL_PAN:仅包含平移按钮；BMAP_NAVIGATION_CONTROL_ZOOM：仅包含缩放按钮*/
+
+    //添加控件和比例尺
+    map.addControl(top_left_control);
+    map.addControl(top_left_navigation);
+    var overlays = [];
+    var overlaycomplete = function (e) {
+        overlays.push(e.overlay);
+    };
+    var styleOptions = {
+        strokeColor: "red",    //边线颜色。
+        fillColor: "red",      //填充颜色。当参数为空时，圆形将没有填充效果。
+        strokeWeight: 3,       //边线的宽度，以像素为单位。
+        strokeOpacity: 0.8,	   //边线透明度，取值范围0 - 1。
+        fillOpacity: 0.6,      //填充的透明度，取值范围0 - 1。
+        strokeStyle: 'solid' //边线的样式，solid或dashed。
+    };
+    function clearAll() {
+        for (var i = 0; i < overlays.length; i++) {
+            map.removeOverlay(overlays[i]);
+        }
+        overlays.length = 0
+    }
+    map.addEventListener("click", function (e) {
+        console.log(e.point.lng + "," + e.point.lat);
+    });
+
+
+    $(document).ready(function () {
+        $("#con").click(function () {
+            $(".sel-img").hide();
+            $(".sel-con").show();
+        })
+        $("#img").click(function () {
+            $(".sel-img").show();
+            $(".sel-con").hide();
+        })
+        var adv_ID = '{{ adv_ID }}';
+        $.get('/adv/ad_details_ajax/' + adv_ID + '/', function (data, status) {
+            if (status = 'success') {
+                var json = JSON.parse(data);
+                var center_point = JSON.parse(json['center']);
+                center_point = new BMap.Point(center_point[0], center_point[1]);
+                map.centerAndZoom(center_point, 12);
+                if (json['type'] == '1') {
+                    var points = JSON.parse(json['location']);
+                    var secRing = [];
+                    for (var i = 0; i < points.length; i++) {
+                        var point = new BMap.Point(points[i][0], points[i][1]);
+                        secRing.push(point)
+                    }
+                    var secRingPolygon = new BMap.Polygon(secRing, {
+                        strokeColor: "blue",
+                        strokeWeight: 5,
+                        strokeOpacity: 0.5
+                    });
+                    map.addOverlay(secRingPolygon);
+                } else {
+                    var points = JSON.parse(json['points']);
+                    for (var i = 0; i < points.length; i++) {
+                        var point = new BMap.Point(points[i][0], points[i][1]);
+                        var circle = new BMap.Circle(point, 500, {
+                            strokeColor: "blue",
+                            strokeWeight: 2,
+                            strokeOpacity: 0.5
+                        });
+                        map.addOverlay(circle);
+                    }
+
+
+                }
+                if (json['img_flag']) {
+                    $(".sel-img").show();
+                    $(".sel-con").hide();
+                    $("#img").attr('checked', true);
+                    $('#adv_img').attr('src', '/static/image/adv_img/' + json['img_src'])
+                } else {
+                    $(".sel-img").hide();
+                    $(".sel-con").show();
+                    $("#con").attr('checked', true);
+                    $('#content').text(json['adv_text'])
+                }
+                $('#brief').text(json['adv_sum']);
+                $('#datepicker').attr('value', json['date']);
+                $('#time1').attr('value', json['start_time']);
+                $('#time2').attr('value', json['end_time']);
+                $('#sin-mon').attr('value', json['cost']);
+                $('#allmon').attr('value', json['adv_amounts']);
+            }
+        })
+    })
+
+</script>
+</body>
+</html>
